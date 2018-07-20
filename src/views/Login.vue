@@ -45,8 +45,9 @@ import {checkUser} from '@/api'
             // 只有校验通过才执行函数
             if(valide) {
               checkUser(this.form).then(res=>{
-                // 如果登录成功，跳转至首页
+                // 如果登录成功，跳转至首页，将token保存到localStorage
                 if(res.meta.status === 200) {
+                  localStorage.setItem('mytoken',res.data.token)
                   this.$router.push({name:'Home'})
                 }else {
                   // 如果登录失败，展示错误信息
