@@ -10,16 +10,18 @@
     <el-input v-model="form.username" placeholder="账户" prefix-icon="myicon myicon-user"></el-input>
     </el-form-item>
     <el-form-item prop="password">
-    <el-input v-model="form.password" placeholder="密码" prefix-icon="myicon myicon-key"></el-input>
+    <el-input v-model="form.password" placeholder="密码" prefix-icon="myicon myicon-key" type="password"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" class="login-btn">登录</el-button>
+      <el-button type="primary" class="login-btn" @click="loginSubmit('form')">登录</el-button>
     </el-form-item>
   </el-form>
   </div>
 </template>
 
 <script>
+import {checkUser} from '@/api'
+
   export default {
     data() {
       return{
@@ -36,6 +38,29 @@
           ]
         }
       }
+      },
+      methods: {
+        loginSubmit(formName) {
+          this.$refs[formName].validate(valide=>{
+            // 只有校验通过才执行函数
+            if(valide) {
+              checkUser(this.form).then(res=>{
+                // 如果登录成功，跳转至首页
+                if(res.meta.status === 200) {
+                  this.$router.push({name:'Home'})
+                }else {
+                  // 如果登录失败，展示错误信息
+                  this.$message({
+                    type:'error',
+                    message:res.meta.msg
+                  })
+                }
+              })
+            } else {
+              console.log('校验不通过')
+            }
+          })
+        }
       }
       
   }
